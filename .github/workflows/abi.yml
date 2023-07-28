@@ -1,0 +1,32 @@
+name: Build ABI
+
+on:
+  push:
+    branches:
+      - master
+    # tags:
+    #   - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        yarn install
+        yarn build
+    - name: Extract ABI
+      run: |
+        mkdir -p abi
+        cd artifacts/contracts
+        find . -path "*.sol/*.json" ! -name "*.dbg.json" -exec sh -c 'jq .abi $1 > ../../abi/$(echo $1 | sed -r s/.+.sol\\///)' -- {} \;
+        cd -
+    - name: Publish ABI
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: abi
+        branch: abi

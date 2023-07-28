@@ -1,0 +1,3 @@
+[submodule "externals/multicall"]
+	path = externals/multicall
+	url = https://github.com/mds1/multicall.git

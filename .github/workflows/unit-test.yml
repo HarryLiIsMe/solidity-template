@@ -1,0 +1,23 @@
+name: Contract unit tests
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Install and run tests 🔧
+        env:
+          KEY: ""
+          MNEMONIC: ""
+        run: |
+          yarn install
+          yarn build
+          yarn test
